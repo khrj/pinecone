@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TrendingUp, Users, Package, Star, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { useInView } from 'react-intersection-observer';
 
 interface StatItem {
   icon: React.ReactNode;
@@ -15,9 +16,11 @@ interface StatsProps {
 }
 
 const Stats: React.FC<StatsProps> = ({ darkMode }) => {
-  const [isVisible, setIsVisible] = useState(false);
   const [counters, setCounters] = useState([0, 0, 0, 0]);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.3
+  });
 
   const stats: StatItem[] = [
     {
@@ -55,24 +58,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
   ];
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
+    if (!inView) return;
 
     const duration = 2000;
     const steps = 60;
@@ -97,12 +83,12 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
         }
       }, stepTime);
     });
-  }, [isVisible]);
+  }, [inView]);
 
   return (
     <section 
       id="stats"
-      ref={sectionRef} 
+      ref={ref} 
       className={`py-24 ${
         darkMode 
           ? 'bg-gradient-to-b from-gray-900 to-gray-800' 
@@ -257,7 +243,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className="absolute bottom-0 w-full bg-gradient-to-t from-blue-600 via-blue-500 to-cyan-400 rounded-full transition-all duration-1000 ease-out shadow-lg"
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 150}ms`
                           }}
                         />
@@ -265,7 +251,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className="absolute bottom-0 w-full bg-gradient-to-t from-transparent via-white/20 to-white/40 rounded-full transition-all duration-1000 ease-out"
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 150}ms`
                           }}
                         />
@@ -341,7 +327,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className={`absolute bottom-0 w-full bg-gradient-to-t ${item.color} rounded-full transition-all duration-1000 ease-out shadow-lg`}
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 120}ms`
                           }}
                         />
@@ -349,7 +335,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className="absolute bottom-0 w-full bg-gradient-to-t from-transparent via-white/20 to-white/40 rounded-full transition-all duration-1000 ease-out"
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 120}ms`
                           }}
                         />
@@ -425,7 +411,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className={`absolute bottom-0 w-full bg-gradient-to-t ${item.color} rounded-full transition-all duration-1000 ease-out shadow-lg`}
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 100}ms`
                           }}
                         />
@@ -433,7 +419,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
                         <div 
                           className="absolute bottom-0 w-full bg-gradient-to-t from-transparent via-white/20 to-white/40 rounded-full transition-all duration-1000 ease-out"
                           style={{ 
-                            height: isVisible ? `${item.value}%` : '0%',
+                            height: inView ? `${item.value}%` : '0%',
                             transitionDelay: `${idx * 100}ms`
                           }}
                         />
