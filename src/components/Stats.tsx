@@ -19,7 +19,7 @@ const Stats: React.FC<StatsProps> = ({ darkMode }) => {
   const [counters, setCounters] = useState([0, 0, 0, 0]);
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.3
+    threshold: 0
   });
 
   const stats: StatItem[] = [
